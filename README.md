@@ -80,6 +80,11 @@ Integration filters:
 
 ## Changelog
 
+### 0.17.0
+
+- Added searchable product-category selection with result status feedback in the admin picker.
+- Kept mobile mega-menu items stacked when the parent mobile-navigation breakpoint extends above the plugin breakpoint.
+
 ### 0.16.17
 
 - Removed the orphaned spatial-grid editor (unenqueued JS, unused sanitize/render branches) left over from before the panel/column builder.
