@@ -339,6 +339,8 @@ final class Renderer {
 		$menu_id      = isset( $block['menu_id'] ) ? absint( $block['menu_id'] ) : 0;
 		$root_item_id = isset( $block['root_item_id'] ) ? absint( $block['root_item_id'] ) : 0;
 		$branch_mode  = isset( $block['branch_mode'] ) && in_array( $block['branch_mode'], array( 'parent_and_children', 'children_only', 'parent_only' ), true ) ? $block['branch_mode'] : 'parent_and_children';
+		$dropdown_columns = isset( $block['dropdown_columns'] ) ? max( 0, min( 6, absint( $block['dropdown_columns'] ) ) ) : 0;
+		$column_class = $dropdown_columns > 1 ? ' mrn-mega-menu__native-menu--columns-' . $dropdown_columns : '';
 		$column_index = isset( $block['distribution_index'] ) ? absint( $block['distribution_index'] ) : 0;
 		$column_total = isset( $block['distribution_total'] ) ? max( 1, min( 12, absint( $block['distribution_total'] ) ) ) : 1;
 		$parent       = 0;
@@ -378,7 +380,7 @@ final class Renderer {
 				$parent = $root_item_id;
 			} else {
 				?>
-				<ul class="mrn-mega-menu__native-menu">
+				<ul class="mrn-mega-menu__native-menu<?php echo esc_attr( $column_class ); ?>">
 					<?php self::render_native_menu_item( $items_by_id[ $root_item_id ], $children, 0, array(), 'parent_and_children' === $branch_mode, $child_arrow_icon, false ); ?>
 				</ul>
 				<?php
@@ -399,7 +401,7 @@ final class Renderer {
 			}
 		}
 		?>
-		<ul class="mrn-mega-menu__native-menu mrn-mega-menu__native-menu--direct-children">
+		<ul class="mrn-mega-menu__native-menu mrn-mega-menu__native-menu--direct-children<?php echo esc_attr( $column_class ); ?>">
 			<?php self::render_native_menu_level( $children, $parent, 0, array(), $child_arrow_icon ); ?>
 		</ul>
 		<?php

@@ -188,6 +188,26 @@
 	width: 100% !important;
 }
 
+.mrn-mega-menu__native-menu--columns-2 {
+	grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.mrn-mega-menu__native-menu--columns-3 {
+	grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.mrn-mega-menu__native-menu--columns-4 {
+	grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.mrn-mega-menu__native-menu--columns-5 {
+	grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+}
+
+.mrn-mega-menu__native-menu--columns-6 {
+	grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+}
+
 .mrn-mega-menu__links li,
 .mrn-mega-menu__categories li,
 .mrn-mega-menu__native-menu li {
@@ -495,8 +515,13 @@
 	}
 
 	.mrn-mega-menu__columns,
-	.mrn-mega-menu__native-menu--direct-children {
-		grid-template-columns: 1fr;
+	.mrn-mega-menu__native-menu--direct-children,
+	.mrn-mega-menu__native-menu--columns-2,
+	.mrn-mega-menu__native-menu--columns-3,
+	.mrn-mega-menu__native-menu--columns-4,
+	.mrn-mega-menu__native-menu--columns-5,
+	.mrn-mega-menu__native-menu--columns-6 {
+		grid-template-columns: 1fr !important;
 	}
 
 	.mrn-mega-menu__mobile-header {
