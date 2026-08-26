@@ -67,6 +67,9 @@
 
 .mrn-mega-menu {
 	--mrn-mega-border: #dfe5eb;
+	--mrn-mega-dropdown-max-width: min(90vw, 960px);
+	--mrn-mega-dropdown-min-width: 220px;
+	--mrn-mega-dropdown-padding: clamp(12px, 1.5vw, 20px);
 	--mrn-mega-hover: #f4f7f9;
 	--mrn-mega-link: #26384a;
 	--mrn-mega-muted: #627181;
@@ -99,15 +102,16 @@
 }
 
 .mrn-mega-menu--dropdown {
+	box-sizing: border-box;
 	left: 0;
-	max-width: min(90vw, 360px);
-	min-width: 220px;
+	max-width: min(var(--mrn-mega-dropdown-max-width), calc(100vw - 32px));
+	min-width: min(var(--mrn-mega-dropdown-min-width), calc(100vw - 32px));
 	transform: none;
 	width: max-content;
 }
 
 .mrn-mega-menu--dropdown .mrn-mega-menu__surface {
-	padding: 8px;
+	padding: var(--mrn-mega-dropdown-padding);
 }
 
 .mrn-mega-menu--dropdown .mrn-mega-menu__columns {
@@ -501,6 +505,8 @@
 
 	.mrn-mega-menu {
 		left: auto;
+		max-width: none;
+		min-width: 0;
 		position: static;
 		top: auto;
 		transform: none;

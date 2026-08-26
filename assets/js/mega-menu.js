@@ -65,8 +65,21 @@
 			return;
 		}
 		alignFullPanel(panel);
+		alignDropdown(panel);
 		const available = Math.max(240, window.innerHeight - panel.getBoundingClientRect().top - 16);
 		surface.style.setProperty('--mrn-mega-menu-available-height', `${available}px`);
+	}
+
+	function alignDropdown(panel) {
+		if (!panel.classList.contains('mrn-mega-menu--dropdown')) return;
+
+		panel.style.setProperty('transform', 'translateX(0px)');
+		const rect = panel.getBoundingClientRect();
+		const gutter = 16;
+		const rightOverflow = rect.right - (window.innerWidth - gutter);
+		const leftOverflow = gutter - rect.left;
+		const offset = rightOverflow > 0 ? -rightOverflow : leftOverflow > 0 ? leftOverflow : 0;
+		panel.style.setProperty('transform', `translateX(${offset}px)`);
 	}
 
 	function alignFullPanel(panel) {
