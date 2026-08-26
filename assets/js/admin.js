@@ -129,6 +129,7 @@
 			const block = fragment.querySelector('.mrn-mm-block');
 			block.querySelector('[data-field="source"]').value = 'selected';
 			block.querySelector('[data-field="branch_mode"]').value = 'children_only';
+			block.querySelector('[data-field="dropdown_columns"]').value = '0';
 			block.querySelector('[data-field="distribution_index"]').value = '0';
 			block.querySelector('[data-field="distribution_total"]').value = '1';
 			block.querySelector('[data-field="menu_id"]').value = assignedMenuId;
@@ -534,6 +535,7 @@
 		});
 		rootSelect.value = Array.from(rootSelect.options).some((option) => option.value === previous) ? previous : '0';
 		blockBody.querySelector('.mrn-mm-branch-mode').hidden = rootSelect.value === '0';
+		blockBody.querySelector('.mrn-mm-dropdown-columns').hidden = rootSelect.value === '0';
 	}
 
 	function openLinkPicker(row, returnFocus) {
@@ -807,7 +809,9 @@
 			populateMenuRoots(event.target.closest('.mrn-mm-block__body'));
 		}
 		if (event.target.matches('.mrn-mm-menu-root')) {
-			event.target.closest('.mrn-mm-block__body').querySelector('.mrn-mm-branch-mode').hidden = event.target.value === '0';
+			const body = event.target.closest('.mrn-mm-block__body');
+			body.querySelector('.mrn-mm-branch-mode').hidden = event.target.value === '0';
+			body.querySelector('.mrn-mm-dropdown-columns').hidden = event.target.value === '0';
 		}
 		if (event.target.matches('[data-field="source"]')) {
 			const manualProducts = event.target.closest('.mrn-mm-block__body').querySelector('.mrn-mm-manual-products');

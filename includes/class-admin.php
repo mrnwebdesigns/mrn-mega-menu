@@ -375,6 +375,7 @@ final class Admin {
 		$menu_id      = isset( $block['menu_id'] ) ? absint( $block['menu_id'] ) : 0;
 		$root_item_id = isset( $block['root_item_id'] ) ? absint( $block['root_item_id'] ) : 0;
 		$branch_mode  = isset( $block['branch_mode'] ) && in_array( $block['branch_mode'], array( 'parent_and_children', 'children_only', 'parent_only' ), true ) ? $block['branch_mode'] : 'parent_and_children';
+		$dropdown_columns = isset( $block['dropdown_columns'] ) ? max( 0, min( 6, absint( $block['dropdown_columns'] ) ) ) : 0;
 		$distribution_index = isset( $block['distribution_index'] ) ? absint( $block['distribution_index'] ) : 0;
 		$distribution_total = isset( $block['distribution_total'] ) ? max( 1, min( 12, absint( $block['distribution_total'] ) ) ) : 1;
 		$menus        = wp_get_nav_menus();
@@ -410,6 +411,16 @@ final class Admin {
 				<option value="parent_only" <?php selected( 'parent_only', $branch_mode ); ?>><?php esc_html_e( 'Parent link only', 'mrn-mega-menu' ); ?></option>
 			</select>
 			<small><?php esc_html_e( 'Choose whether the opened dropdown repeats the parent link above its child links.', 'mrn-mega-menu' ); ?></small>
+		</label>
+		<label class="mrn-mm-field mrn-mm-dropdown-columns" <?php echo ! $root_item_id ? 'hidden' : ''; ?>>
+			<span><?php esc_html_e( 'Menu item columns', 'mrn-mega-menu' ); ?></span>
+			<select data-field="dropdown_columns">
+				<option value="0" <?php selected( 0, $dropdown_columns ); ?>><?php esc_html_e( 'Auto', 'mrn-mega-menu' ); ?></option>
+				<?php for ( $column_count = 1; $column_count <= 6; $column_count++ ) : ?>
+					<option value="<?php echo esc_attr( $column_count ); ?>" <?php selected( $column_count, $dropdown_columns ); ?>><?php echo esc_html( $column_count ); ?></option>
+				<?php endfor; ?>
+			</select>
+			<small><?php esc_html_e( 'Choose how many columns display the selected menu items. Auto keeps the current layout.', 'mrn-mega-menu' ); ?></small>
 		</label>
 		<p class="description mrn-mm-menu-description">
 			<?php esc_html_e( 'Native menu labels, URLs, hierarchy, and ordering remain managed in Appearance → Menus.', 'mrn-mega-menu' ); ?>
@@ -767,6 +778,7 @@ final class Admin {
 			$clean['menu_id']      = isset( $block['menu_id'] ) ? absint( $block['menu_id'] ) : 0;
 			$clean['root_item_id'] = isset( $block['root_item_id'] ) ? absint( $block['root_item_id'] ) : 0;
 			$clean['branch_mode']  = isset( $block['branch_mode'] ) && in_array( $block['branch_mode'], $branch_modes, true ) ? $block['branch_mode'] : 'parent_and_children';
+			$clean['dropdown_columns'] = isset( $block['dropdown_columns'] ) ? max( 0, min( 6, absint( $block['dropdown_columns'] ) ) ) : 0;
 			$clean['distribution_index'] = isset( $block['distribution_index'] ) ? min( 11, absint( $block['distribution_index'] ) ) : 0;
 			$clean['distribution_total'] = isset( $block['distribution_total'] ) ? max( 1, min( 12, absint( $block['distribution_total'] ) ) ) : 1;
 		} elseif ( 'links' === $type ) {
