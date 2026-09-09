@@ -80,6 +80,14 @@ Integration filters:
 
 ## Changelog
 
+### 0.17.2
+
+- Kept dropdown mega menus within the viewport and corrected overflow after browser resizing.
+
+### 0.17.1
+
+- Added configurable column counts for individual mega-menu items while preserving the default layout.
+
 ### 0.17.0
 
 - Added searchable product-category selection with result status feedback in the admin picker.
