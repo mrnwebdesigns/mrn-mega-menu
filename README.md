@@ -80,6 +80,12 @@ Integration filters:
 
 ## Changelog
 
+### 0.17.3
+
+- Inspect configured trigger, arrow, child, and selected-menu icons before loading their font libraries.
+- Preserve existing reusable-renderer compatibility; known integrations can declare `mrn_mega_menu_reusable_icon_asset_needs` with explicit `dashicons` and `fontawesome` booleans.
+- Keep menu HTML, keyboard behavior, and other components' asset requests unchanged.
+
 ### 0.17.2
 
 - Kept dropdown mega menus within the viewport and corrected overflow after browser resizing.

@@ -123,11 +123,100 @@ final class Renderer {
 			return;
 		}
 		wp_enqueue_style( 'mrn-mega-menu', Plugin::asset_url( 'assets/css/mega-menu.css' ), array(), Plugin::VERSION );
-		wp_enqueue_style( 'dashicons' );
-		if ( function_exists( 'mrn_shared_assets_enqueue_fontawesome' ) ) {
+		$icon_needs = self::get_icon_asset_needs();
+		if ( $icon_needs['dashicons'] ) {
+			wp_enqueue_style( 'dashicons' );
+		}
+		if ( $icon_needs['fontawesome'] && function_exists( 'mrn_shared_assets_enqueue_fontawesome' ) ) {
 			mrn_shared_assets_enqueue_fontawesome( 'mrn-mega-menu-fontawesome', 'mega-menu' );
 		}
 		wp_enqueue_script( 'mrn-mega-menu', Plugin::asset_url( 'assets/js/mega-menu.js' ), array(), Plugin::VERSION, true );
+	}
+
+	/**
+	 * Discover icon libraries before wp_head without rendering menu content twice.
+	 *
+	 * Inspect every configured item in relevant menus conservatively, including
+	 * selected menu blocks and legacy assignments. Unknown reusable renderers keep
+	 * both historical libraries; their owner may declare a narrower requirement.
+	 * This never dequeues a library requested by another component.
+	 *
+	 * @return array{dashicons:bool,fontawesome:bool}
+	 */
+	public static function get_icon_asset_needs() {
+		$needs       = array( 'dashicons' => false, 'fontawesome' => false );
+		$assignments = self::assignments();
+		$menu_ids    = array();
+		foreach ( Plugin::get_enabled_menus() as $menu ) {
+			$menu_ids[] = absint( $menu->term_id );
+		}
+		if ( $assignments ) {
+			$assigned_menus = wp_get_object_terms( array_keys( $assignments ), 'nav_menu', array( 'fields' => 'ids' ) );
+			if ( ! is_wp_error( $assigned_menus ) && is_array( $assigned_menus ) ) {
+				$menu_ids = array_merge( $menu_ids, array_map( 'absint', $assigned_menus ) );
+			}
+		}
+		foreach ( $assignments as $item_id => $layout_id ) {
+			if ( $layout_id && 'publish' !== get_post_status( $layout_id ) ) {
+				continue;
+			}
+			$panel = self::find_panel( $layout_id, $item_id );
+			if ( is_array( $panel ) ) {
+				self::collect_icon_asset_needs( $panel, $needs, $menu_ids );
+			}
+		}
+		foreach ( array_unique( array_filter( $menu_ids ) ) as $menu_id ) {
+			$items = wp_get_nav_menu_items( $menu_id, array( 'update_post_term_cache' => false ) );
+			if ( ! is_array( $items ) || is_wp_error( $items ) ) {
+				continue;
+			}
+			foreach ( $items as $item ) {
+				foreach ( array( 'item', 'arrow' ) as $role ) {
+					self::collect_icon_asset_needs( Plugin::get_menu_item_icon( $item->ID, $role ), $needs, $menu_ids );
+				}
+			}
+		}
+		return $needs;
+	}
+
+	/**
+	 * Collect configured icons and native menu references from a layout value.
+	 *
+	 * @param array               $value Layout value or normalized icon.
+	 * @param array<string, bool> $needs Collected icon-library requirements.
+	 * @param array<int>          $menu_ids Referenced native menus.
+	 * @return void
+	 */
+	private static function collect_icon_asset_needs( array $value, array &$needs, array &$menu_ids ) {
+		$icon = Plugin::sanitize_icon( $value );
+		if ( $icon['value'] && isset( $needs[ $icon['type'] ] ) ) {
+			$needs[ $icon['type'] ] = true;
+		}
+		if ( 'menu' === ( $value['type'] ?? '' ) && 'selected' === ( $value['source'] ?? '' ) ) {
+			$menu_ids[] = absint( $value['menu_id'] ?? 0 );
+		}
+		if ( 'reusable' === ( $value['type'] ?? '' ) && ! empty( $value['reusable_block_id'] ) ) {
+			/**
+			 * Declare a known reusable renderer's icon-library requirements.
+			 *
+			 * Unknown renderers retain the historical libraries. A declaration must
+			 * include both keys; missing or malformed values retain that library.
+			 *
+			 * @param array<string, bool> $reusable_needs Icon-library requirements.
+			 * @param int                 $post_id Reusable block ID.
+			 */
+			$reusable_needs = apply_filters( 'mrn_mega_menu_reusable_icon_asset_needs', array( 'dashicons' => true, 'fontawesome' => true ), absint( $value['reusable_block_id'] ) );
+			foreach ( array_keys( $needs ) as $library ) {
+				if ( ! is_array( $reusable_needs ) || false !== ( $reusable_needs[ $library ] ?? null ) ) {
+					$needs[ $library ] = true;
+				}
+			}
+		}
+		foreach ( $value as $child ) {
+			if ( is_array( $child ) ) {
+				self::collect_icon_asset_needs( $child, $needs, $menu_ids );
+			}
+		}
 	}
 
 	public static function menu_item_classes( $classes, $item, $args, $depth ) {

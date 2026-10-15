@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 final class Plugin {
-	public const VERSION = '0.17.2';
+	public const VERSION = '0.17.3';
 	public const POST_TYPE = 'mrn_mega_menu';
 	public const META_LAYOUT = '_mrn_mega_menu_layout';
 	public const OPTION_ASSIGNMENTS = 'mrn_mega_menu_assignments';
