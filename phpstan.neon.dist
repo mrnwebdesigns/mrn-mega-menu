@@ -1,0 +1,16 @@
+parameters:
+    level: 3
+    paths:
+        - mrn-mega-menu.php
+        - includes
+    tmpDir: .tmp/phpstan
+    reportUnmatchedIgnoredErrors: false
+    treatPhpDocTypesAsCertain: false
+    excludePaths:
+        # Standalone fixtures redefine WordPress globals and run separately.
+        analyseAndScan:
+            - */tests/*
+        analyse:
+            - */vendor/*
+            - */node_modules/*
+            - .tmp/*
